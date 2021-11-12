@@ -19,10 +19,6 @@ config = {
     # percentage van de opgewekte stroom die je zelf kan gebruiken, de rest wordt teruggeleverd aan het net
     "eigen_verbruik_percentage": 0.3,
 
-    # Op basis van
-    # https://www.nu.nl/economie/5745627/prijs-van-energie-afgelopen-tien-jaar-met-14-procent-gestegen.html
-    "jaarlijkse_stijging_electriciteit": 0.017,
-
     # Hoeveel procent van het verbruik je in welke maand opwekt (alles bij elkaar = 1)
     # Bron: milieucentraal.nl
     "opbrengst_percentage_per_maand": [0.03, 0.05, 0.08, 0.12, 0.13, 0.13, 0.13, 0.11, 0.10, 0.07, 0.03, 0.02],
@@ -33,7 +29,7 @@ config = {
 
     # Bedrag dat energieleverancier betaald per teruggeleverde kWh (die niet gesaldeerd zijn)
     "terugleververgoeding": 0.06,
-    
+
     # Prijs per kWh
     "prijs_per_kwh": 0.23
 }
@@ -76,15 +72,12 @@ class ZonnepaneelBerekening:
 
         return verbruik_per_maand
 
-    def bereken_maandelijks_eigen_verbruik(
-            self,
-            maandelijkse_opwekking: [int],
-    ):
+    def bereken_maandelijks_eigen_verbruik(self, maandelijkse_opwekking: [int]):
         eigen_verbruik = []
         teruggeleverd = []
         for idx, opwekking in enumerate(maandelijkse_opwekking):
             eigen_verbruik.append(round(opwekking * self.cfg["eigen_verbruik_percentage"]))
-            teruggeleverd.append(round(opwekking * (1-self.cfg["eigen_verbruik_percentage"])))
+            teruggeleverd.append(round(opwekking * (1 - self.cfg["eigen_verbruik_percentage"])))
 
         return eigen_verbruik, teruggeleverd
 
@@ -96,7 +89,8 @@ class ZonnepaneelBerekening:
 
         for jaar in range(self.cfg["jaren"]):
             # Het salderings percentage neemt af over de jaren en is op een bepaald moment 0
-            salderings_percentage = self.cfg["salderings_percentage"][jaar] if jaar < len(self.cfg["salderings_percentage"]) else 0
+            salderings_percentage = self.cfg["salderings_percentage"][jaar] if jaar < len(
+                self.cfg["salderings_percentage"]) else 0
 
             # Berekening hoeveel is teruggeleverd en zelf verbruikt over het hele jaar
             maand_range = slice(jaar * 12, jaar * 12 + 12)
@@ -138,7 +132,7 @@ class ZonnepaneelBerekening:
             jaarlijks_teruggeleverd: [int]
     ):
         totale_winst = 0
-        
+
         for jaar in range(self.cfg["jaren"]):
             print("")
             print("Jaar"
@@ -157,7 +151,7 @@ class ZonnepaneelBerekening:
                       f" | {maandelijkse_verbruik[i]:>13}"
                       f" | {maandelijks_eigen_verbruik[i]:>18}"
                       f" | {opwekking_kwh[i]:>12}"
-                )
+                      )
 
             maand_range = slice(jaar * 12, jaar * 12 + 12)
             totaal_verbruik = sum(maandelijkse_verbruik[maand_range])
@@ -165,9 +159,8 @@ class ZonnepaneelBerekening:
             totaal_eigen_verbruik = sum(maandelijks_eigen_verbruik[maand_range])
             net_verbruik = totaal_verbruik - totaal_eigen_verbruik - jaarselijkse_saldering[jaar]
 
-
             print("")
-            print(f"{2022+jaar}")
+            print(f"{2022 + jaar}")
             print("-------------------------------")
             print(f"Verbruik {totaal_verbruik:>18} kWh")
             print(f"Opwekking {totaal_opwekking:>17} kWh")
@@ -196,11 +189,9 @@ class ZonnepaneelBerekening:
 
             totale_winst += winst
 
-
         print("\n\n\n")
         print("======== Over 25 jaar =========")
         print(f"Winst {'€ {:.2f}'.format(totale_winst):>25}")
-
 
     def bereken_alles(self):
         maandelijkse_hypotheek_betalingen = self.bereken_maandelijkse_hypotheek()
@@ -209,9 +200,11 @@ class ZonnepaneelBerekening:
 
         maandelijkse_verbruik = self.bereken_maandelijks_verbruik()
 
-        maandelijks_eigen_verbruik, maandelijks_teruggeleverd = self.bereken_maandelijks_eigen_verbruik(maandelijkse_opwekking)
+        maandelijks_eigen_verbruik, maandelijks_teruggeleverd = self.bereken_maandelijks_eigen_verbruik(
+            maandelijkse_opwekking)
 
-        jaarselijkse_saldering, jaarlijks_teruggeleverd = self.bereken_jaarlijkse_saldering_en_teruglevering(maandelijks_eigen_verbruik, maandelijks_teruggeleverd)
+        jaarselijkse_saldering, jaarlijks_teruggeleverd = self.bereken_jaarlijkse_saldering_en_teruglevering(
+            maandelijks_eigen_verbruik, maandelijks_teruggeleverd)
 
         self.print_alles(
             maandelijkse_hypotheek_betalingen,
@@ -221,7 +214,6 @@ class ZonnepaneelBerekening:
             jaarselijkse_saldering,
             jaarlijks_teruggeleverd,
         )
-
 
 
 def main():
