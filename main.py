@@ -75,7 +75,7 @@ class ZonnepaneelBerekening:
     def bereken_maandelijks_eigen_verbruik(self, maandelijkse_opwekking: [int]):
         eigen_verbruik = []
         teruggeleverd = []
-        for idx, opwekking in enumerate(maandelijkse_opwekking):
+        for opwekking in maandelijkse_opwekking:
             eigen_verbruik.append(round(opwekking * self.cfg["eigen_verbruik_percentage"]))
             teruggeleverd.append(round(opwekking * (1 - self.cfg["eigen_verbruik_percentage"])))
 
