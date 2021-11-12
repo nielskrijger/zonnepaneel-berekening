@@ -111,17 +111,6 @@ class ZonnepaneelBerekening:
 
         return saldering, normaal_teruggeleverd
 
-    def print_values_per_maand(self, values: [float]):
-        print("Jaar | Maand | Getal")
-        for jaar in range(self.cfg["jaren"]):
-            for maand in range(12):
-                print(f"{2022 + jaar:>4} | {1 + maand:>5} | {values[jaar * 12 + maand]:>5}")
-
-    def print_values_per_jaar(self, values: [float]):
-        print("Jaar | Getal")
-        for jaar in range(self.cfg["jaren"]):
-            print(f"{2022 + jaar:>4} | {values[jaar]:>5}")
-
     def print_alles(
             self,
             hypotheek: [float],
